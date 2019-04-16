@@ -15,7 +15,7 @@ const isSame = (name) => {
   let same = false
   for (let i = 0; i < connNum.length; i++) {
     let w = connNum[i]
-    if (w.name === name) {
+    if (w.name == name) {
       same = true
       break
     }
@@ -26,24 +26,40 @@ const isSame = (name) => {
 
 //函数参数，连接的对象
 ws.on('connection', function (socket, req) {
-  console.log('socket', socket.id)
+  // console.log('socket', socket.id)
   //收到消息发送给每一个人
   socket.on('message', function (msg) {
     console.log('msg', msg)
-    if (!isSame(msg.name)) {
+    let data = JSON.parse(msg)
+
+
+    if (!isSame(data.name)) {
       connNum.push({
-        name: msg.name,
+        name: data.name,
         socket
       })
     }
+    // console.log('isSame',isSame(data.name),connNum[0].name);
+    console.log('连接数：' + connNum.length)
+    let len = connNum.length;
 
-    console.log('连接了' + connNum.length)
     //广播给所有人
     for (var i = 0; i < connNum.length; i++) {
-      connNum[i].socket.send(msg)
+      let message = ''
+      if (data.msg) {
+        message = data.msg
+      }
+      if (connNum[i].name) {
+        connNum[i].socket.send(JSON.stringify({
+          name: connNum[i].name,
+          msg: message,
+          len
+        }))
+      }
+
     }
   })
-  socket.send('发送的消息')
+  // socket.send('发送的消息')
   //断开连接
   socket.on('close', function () {
     connNum.splice(connNum.indexOf(this), 1)

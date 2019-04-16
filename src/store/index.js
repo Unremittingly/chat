@@ -1,20 +1,19 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-import login from './login'
+import login from './login';
 
 Vue.use(Vuex);
 
-
-const state = {}
-const actions = {}
-const mutations = {}
+const state = {};
+const actions = {};
+const mutations = {};
 const store = new Vuex.Store({
   modules: {
-    login:login
+    login: login
   },
   actions,
   state,
-  mutations,
-})
+  mutations
+});
 export default store;

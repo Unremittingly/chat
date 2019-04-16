@@ -6,28 +6,21 @@
     </div>
     <div class="desc">
       <span class="all-num desc-item"><span class="label">总人数：</span><span>{{this.userNum}}</span></span>
-      <span class="cur-num desc-item"><span class="label">当前在线：</span><span>0</span></span>
+      <span class="cur-num desc-item"><span class="label">当前在线：</span><span>{{this.curNum}}</span></span>
     </div>
     <div class="content">
-      <div class="chat-item">
-        <div class="item-user">
-          <span class="name">test</span>
-          <span class="time">9:14:21</span>
+      <div v-for="item in data" :key='item'  class="chat-item">
+        <div class="item-user " :class="{self:item.isSelf}">
+          <span class="name">{{item.name}}</span>
+          <span class="time">{{item.time}}</span>
         </div>
-        <div class="item-con">你是猴子请来的么？</div>
-      </div>
-      <div class="chat-item">
-        <div class="item-user">
-          <span class="name">test</span>
-          <span class="time">9:14:21</span>
-        </div>
-        <div class="item-con">你是猴子请来的么？</div>
+        <div class="item-con">{{item.text}}</div>
       </div>
 
     </div>
     <div class="chatInput">
-      <textarea placeholder="输入内容"></textarea>
-      <span v-model="text" class="send" @click="sendMessage">send</span>
+      <textarea v-model="text" placeholder="输入内容"></textarea>
+      <span class="send" @click="sendMessage">send</span>
     </div>
 
   </div>
@@ -35,44 +28,87 @@
 
 <script>
 
-  import {websocket} from '../helper/websocket'
+import {websocket} from '../helper/websocket';
+import {timeFormat} from '../helper/func';
 
-  export default {
-    name: 'index',
-    data () {
-      return {
-        name: this.$store.state.login.user,
-        text: '',
-        userNum:this.$store.state.login.userNum
-      }
-    },
-    methods: {
-      sendMessage () {
-        console.log('1', this.text)
-      }
-    },
-    beforeCreate(){
-      if(!this.$store.state.login.isLogin){
-        this.$router.push({
-          path: '/',
-        })
-      }
-    },
-    created () {
-      //获取user
-      let user = this.$store.state.login.user;
-      let userNum = this.$store.state.login.userNum;
+export default {
+  name: 'index',
 
-      websocket(user, 1, function (result) {
-        console.log('result', result)
-      })
-
-      console.log('2222', this.$store.state.login.user)
-
-      console.log('11', this.$router)
+  data () {
+    return {
+      name: this.$store.state.login.user,
+      text: '',
+      userNum: this.$store.state.login.userNum,
+      curNum: 0,
+      socket: null,
+      data: [
+        {
+          isSelf: true,
+          name: 'test',
+          text: '你是猴子请来的逗比么 ',
+          time: '9:14:21'
+        },
+        {
+          isSelf: false,
+          name: 'test',
+          text: '你是猴子请来的逗比么 ',
+          time: '9:14:21'
+        }
+      ]
+    };
+  },
+  methods: {
+    sendMessage () {
+      this.socket.ws.send(JSON.stringify(
+        {
+          name: this.name,
+          msg: this.text
+        }
+      ));
     }
+  },
+  beforeCreate () {
+    if (!this.$store.state.login.isLogin) {
+      this.$router.push({
+        path: '/'
+      });
+    }
+  },
+  created () {
+    // debugger
+    // if(!this.$store.state.login.isLogin){
+    //   return false;
+    // }
+    // 获取user
+    let user = this.$store.state.login.user;
 
+    // 单例
+    this.socket = websocket(user, 1, (result) => {
+      let data = JSON.parse(result);
+
+      console.log('message', data);
+      this.curNum = data.len ? data.len : 0;
+      let isSelf = false;
+      if (data.name) {
+        if (data.name === this.name) {
+          isSelf = true;
+        }
+        if (data.msg !== '') {
+          // Vue 动态添加的数据  如果需要更新视图 那么就需要
+          let index = this.data.length;
+
+          this.data.splice(index, 1, {
+            isSelf: isSelf,
+            name: 'test',
+            text: data.msg,
+            time: timeFormat(new Date() / 1000, 'H:m:s')
+          });
+        }
+      }
+    });
   }
+
+};
 </script>
 
 <style scoped lang="less">
@@ -90,7 +126,6 @@
         margin: 0 1rem;
       }
 
-
     }
 
     .content {
@@ -101,22 +136,25 @@
       text-align: left;
       border: 1px solid #eee;
 
-
       .chat-item {
         margin-bottom: 1.5rem;
       }
 
       .item-user {
         margin: 0.5rem 0;
-        color: green;
+        color: blue;
 
         .name {
           margin-right: 0.5rem;
         }
       }
 
-      .item-con {
+      .self {
+        color: green;
+      }
 
+      .item-con {
+        padding-left: 1rem;
       }
 
     }
@@ -126,7 +164,6 @@
       justify-content: space-between;
       height: 10vh;
       margin-top: 1rem;
-
 
       textarea {
         width: 70vw;

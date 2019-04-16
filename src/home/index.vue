@@ -13,51 +13,48 @@
 
 <script>
 
-  import {postUrl} from '../helper/dataManage'
+import {postUrl} from '../helper/dataManage';
 
-  export default {
-    name: 'index',
-    data: function () {
-      return {
-        name: '',
-        id: 1
-      }
+export default {
+  name: 'index',
+  data: function () {
+    return {
+      name: '',
+      id: 1
+    };
+  },
+  methods: {
+
+    setUser (name, num) {
+      this.$store.commit('login/setUser', name);
+      this.$store.commit('login/setUserNum', num);
+      this.$store.commit('login/setLoginStatus', true);
     },
-    methods: {
-
-      setUser (name,num) {
-        this.$store.commit('login/setUser', name);
-        this.$store.commit('login/setUserNum',num);
-        this.$store.commit('login/setLoginStatus',true)
-      },
-      login () {
-
-        console.log('this', this.name)
-        let name = this.name
-        if (name) {
-          postUrl('http://localhost:3010/login', {
-            name: name,
-            id: this.id
-          }).then((data) => {
-            console.log('data', data)
-            this.setUser(name,data.userNum)
-            this.$router.push(
-              {
-                path: '/room',
-                query: {
-                  name: this.name,
-                  id: this.id
-                }
+    login () {
+      console.log('this', this.name);
+      let name = this.name;
+      if (name) {
+        postUrl('http://localhost:3010/login', {
+          name: name,
+          id: this.id
+        }).then((data) => {
+          this.setUser(name, data.userNum);
+          this.$router.push(
+            {
+              path: '/room',
+              query: {
+                name: this.name,
+                id: this.id
               }
-            )
-            console.log('login in')
-          })
-
-        }
+            }
+          );
+          console.log('login in');
+        });
       }
-
     }
+
   }
+};
 </script>
 
 <style scoped lang="less">
@@ -72,7 +69,6 @@
   .item {
     margin: 2rem;
 
-
     input {
       height: 2.8rem;
       width: 10rem;
@@ -84,7 +80,6 @@
 
     }
   }
-
 
   #login {
     padding: 0.5rem 2rem;

@@ -4,7 +4,7 @@ const state = {
   userImage: '',
   userNum: 0,
   isLogin: false
-}
+};
 
 const getters = {};
 
@@ -26,7 +26,7 @@ const mutations = {
   setLoginStatus (state, value) {
     state.isLogin = value;
   }
-}
+};
 
 export default {
   namespaced: true,
@@ -34,4 +34,4 @@ export default {
   getters,
   actions,
   mutations
-}
+};
