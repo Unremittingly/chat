@@ -27,7 +27,6 @@ const isSame = (name) => {
 //函数参数，连接的对象
 ws.on('connection', function (socket, req) {
   console.log('socket', socket.id)
-
   //收到消息发送给每一个人
   socket.on('message', function (msg) {
     console.log('msg', msg)

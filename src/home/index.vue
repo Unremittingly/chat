@@ -25,8 +25,10 @@
     },
     methods: {
 
-      setUser(name){
-        this.$store.commit("login/setUser",name);
+      setUser (name,num) {
+        this.$store.commit('login/setUser', name);
+        this.$store.commit('login/setUserNum',num);
+        this.$store.commit('login/setLoginStatus',true)
       },
       login () {
 
@@ -38,7 +40,7 @@
             id: this.id
           }).then((data) => {
             console.log('data', data)
-            this.setUser(name);
+            this.setUser(name,data.userNum)
             this.$router.push(
               {
                 path: '/room',
