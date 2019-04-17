@@ -3,7 +3,8 @@ const state = {
   user: '',
   userImage: '',
   userNum: 0,
-  isLogin: false
+  isLogin: false,
+  uid:0
 };
 
 const getters = {};
@@ -13,6 +14,9 @@ const actions = {};
 const mutations = {
   setSession_id (state, value) {
     state.session_id = value;
+  },
+  setUserId(state,value){
+    state.uid = value
   },
   setUser (state, value) {
     state.user = value;

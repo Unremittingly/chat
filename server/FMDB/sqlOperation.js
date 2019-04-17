@@ -151,7 +151,7 @@ const insertData = function (sql, callback) {
                     console.log('数据插入成功', result);
                     isSuccess = true;
                 }
-                callback(isSuccess);
+                callback(isSuccess,result);
             })
         }
     } else {

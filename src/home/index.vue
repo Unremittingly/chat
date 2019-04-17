@@ -25,10 +25,12 @@ export default {
   },
   methods: {
 
-    setUser (name, num) {
+    setUser (name, data) {
+      let num = data.userNum;
       this.$store.commit('login/setUser', name);
       this.$store.commit('login/setUserNum', num);
       this.$store.commit('login/setLoginStatus', true);
+      this.$store.commit('login/setUserId',data.id);
     },
     login () {
       console.log('this', this.name);
@@ -38,7 +40,7 @@ export default {
           name: name,
           id: this.id
         }).then((data) => {
-          this.setUser(name, data.userNum);
+          this.setUser(name, data);
           this.$router.push(
             {
               path: '/room',
