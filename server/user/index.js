@@ -59,15 +59,10 @@ const login = (app) => {
               next();
             }
           });
-
         }
-
       });
-
     });
-
   });
-
 };
 
 const saveChatRecord = (app) => {

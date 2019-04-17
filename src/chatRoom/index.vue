@@ -42,26 +42,15 @@
         userNum: this.$store.state.login.userNum,
         curNum: 0,
         socket: null,
-        data: [
-          {
-            // key:1,
-            isSelf: true,
-            name: 'test',
-            text: '你是猴子请来的逗比么 ',
-            time: '9:14:21'
-          },
-          {
-            // key:2,
-            isSelf: false,
-            name: 'test',
-            text: '你是猴子请来的逗比么 ',
-            time: '9:14:21'
-          }
-        ]
+        data: []
       };
     },
     methods: {
       sendMessage () {
+        if(!this.text){
+          console.log('消息不能为空!');
+          return false;
+        }
         this.socket.ws.send(JSON.stringify(
           {
             name: this.name,
@@ -128,9 +117,7 @@
             }).then((data) => {
 
             });
-
             let index = this.data.length;
-
             this.data.splice(index, 1, {
               // id:3,
               isSelf: isSelf,
