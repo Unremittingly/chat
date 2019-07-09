@@ -11,10 +11,12 @@
     "test": "npm run e2e",
     "lint": "eslint --ext .js,.vue src --fix",
     "build": "node build/build.js",
-    "server": "node server/socketServer.js"
+    "server": "node server/socketServer.js",
+    "s": "node server/index.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "mysql": "^2.17.1",
     "qs": "^6.7.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
@@ -71,7 +73,7 @@
     "vuex": "^3.1.0",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^3.1.11",
+    "webpack-dev-server": "^2.9.0",
     "webpack-merge": "^4.1.0"
   },
   "engines": {

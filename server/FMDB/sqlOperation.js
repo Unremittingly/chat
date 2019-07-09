@@ -11,7 +11,8 @@ const connectMysql = function (option) {
         host: 'localhost',
         port: '3306',
         user: 'root',
-        password: 'fcymwg&M%8r_',
+      //123456Zq  fcymwg&M%8r_
+        password: '123456Zq',
         database: 'chat'
     };
     opt = Object.assign(opt, option);
