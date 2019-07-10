@@ -29,125 +29,124 @@
 
 <script>
 
-  import {websocket} from '../helper/websocket';
-  import {timeFormat} from '../helper/func';
-  import {postUrl} from '../helper/dataManage';
+import {websocket} from '../helper/websocket';
+import {timeFormat} from '../helper/func';
+import {postUrl} from '../helper/dataManage';
 
-  export default {
-    name: 'index',
+export default {
+  name: 'index',
 
-    data () {
-      return {
-        name: this.$store.state.login.user,
-        text: '',
-        userNum: this.$store.state.login.userNum,
-        curNum: 0,
-        socket: null,
-        data: []
-      };
-    },
-    methods: {
-      loginOut(){
-        this.$store.commit('login/loginOut');
-        this.socket.ws.close();
-        this.$router.push(
-          {
-            path: '/home'
-          }
-        );
-        // window.location.reload()
-
-      },
-      sendMessage () {
-        if(!this.text){
-          console.log('消息不能为空!');
-          return false;
+  data () {
+    return {
+      name: this.$store.state.login.user,
+      text: '',
+      userNum: this.$store.state.login.userNum,
+      curNum: 0,
+      socket: null,
+      data: []
+    };
+  },
+  methods: {
+    loginOut () {
+      this.$store.commit('login/loginOut');
+      this.socket.ws.close();
+      this.$router.push(
+        {
+          path: '/home'
         }
-        this.socket.ws.send(JSON.stringify(
-          {
-            name: this.name,
-            msg: this.text
-          }
-        ));
-      },
-      initData (data) {
-        for (let i = 0; i < data.length; i++) {
-          let obj = data[i];
-          let isSelf = false;
-          if (obj.username === this.name) {
-            isSelf = true;
-          }
-          this.data.splice(i,1,{
+      );
+      // window.location.reload()
+    },
+    sendMessage () {
+      if (!this.text) {
+        console.log('消息不能为空!');
+        return false;
+      }
+      this.socket.ws.send(JSON.stringify(
+        {
+          name: this.name,
+          msg: this.text
+        }
+      ));
+    },
+    initData (data) {
+      for (let i = 0; i < data.length; i++) {
+        let obj = data[i];
+        let isSelf = false;
+        if (obj.username === this.name) {
+          isSelf = true;
+        }
+        this.data.splice(i, 1, {
+          // id:3,
+          id: obj.sendId,
+          isSelf: isSelf,
+          name: obj.username,
+          text: obj.content,
+          time: timeFormat(obj.time, 'H:m:s')
+        });
+      }
+    }
+  },
+  beforeDestroy () {
+    this.socket.ws.close();
+  },
+  beforeCreate () {
+    if (!this.$store.state.login.isLogin) {
+      this.$router.push({
+        path: '/'
+      });
+    } else {
+      let self = this;
+      postUrl('http://localhost:3010/getAllUser').then(function (data) {
+        self.userNum = data.userNum;
+      });
+      postUrl('http://localhost:3010/getAllRecord', {}).then((data) => {
+        self.initData(data.data);
+      });
+    }
+  },
+
+  created () {
+    // debugger
+    // if(!this.$store.state.login.isLogin){
+    //   return false;
+    // }
+    // 获取user
+    let user = this.$store.state.login.user;
+    // 单例
+    this.socket = websocket(user, 1, (result) => {
+      let data = JSON.parse(result);
+
+      console.log('message', data);
+      this.curNum = data.len ? data.len : 0;
+      let isSelf = false;
+      if (data.name) {
+        if (data.name === this.name) {
+          isSelf = true;
+        }
+        if (data.msg !== '') {
+          // Vue 动态添加的数据  如果需要更新视图 那么就需要
+          let uid = this.$store.state.login.uid;
+          postUrl('http://localhost:3010/saveRecord', {
+            id: uid,
+            content: data.msg
+          }).then((data) => {
+
+          });
+          let index = this.data.length;
+          this.data.splice(index, 1, {
             // id:3,
-            id: obj.sendId,
             isSelf: isSelf,
-            name: obj.username,
-            text: obj.content,
-            time:  timeFormat(obj.time, 'H:m:s')
+            name: data.name,
+            text: data.msg,
+            time: timeFormat(new Date() / 1000, 'H:m:s')
           });
         }
       }
-    },
-    beforeDestroy(){
-      this.socket.ws.close();
-    },
-    beforeCreate () {
-      if (!this.$store.state.login.isLogin) {
-        this.$router.push({
-          path: '/'
-        });
-      } else {
-        let self = this;
-        postUrl('http://localhost:3010/getAllUser').then(function (data) {
-          self.userNum = data.userNum;
-        });
-        postUrl('http://localhost:3010/getAllRecord', {}).then((data) => {
-          self.initData(data.data);
-        });
-      }
-    },
+    });
+  }
 
-    created () {
-      // debugger
-      // if(!this.$store.state.login.isLogin){
-      //   return false;
-      // }
-      // 获取user
-      let user = this.$store.state.login.user;
-      // 单例
-      this.socket = websocket(user, 1, (result) => {
-        let data = JSON.parse(result);
-
-        console.log('message', data);
-        this.curNum = data.len ? data.len : 0;
-        let isSelf = false;
-        if (data.name) {
-          if (data.name === this.name) {
-            isSelf = true;
-          }
-          if (data.msg !== '') {
-            // Vue 动态添加的数据  如果需要更新视图 那么就需要
-            let uid = this.$store.state.login.uid;
-            postUrl('http://localhost:3010/saveRecord', {
-              id: uid,
-              content: data.msg
-            }).then((data) => {
-
-            });
-            let index = this.data.length;
-            this.data.splice(index, 1, {
-              // id:3,
-              isSelf: isSelf,
-              name: data.name,
-              text: data.msg,
-              time: timeFormat(new Date() / 1000, 'H:m:s')
-            });
-          }
-        }
-      });
-    }
-
-  };
+};
 </script>
 
 <style scoped lang="less">

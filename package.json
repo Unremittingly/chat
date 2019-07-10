@@ -9,7 +9,7 @@
     "start": "npm run dev",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run e2e",
-    "lint": "eslint --ext .js,.vue src --fix",
+    "lint": "eslint --ext .js  .vue src --fix",
     "build": "node build/build.js",
     "server": "node server/socketServer.js",
     "s": "node server/index.js"

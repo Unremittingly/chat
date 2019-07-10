@@ -28,7 +28,7 @@ export default {
       this.$store.commit('login/setUser', name);
       this.$store.commit('login/setUserNum', num);
       this.$store.commit('login/setLoginStatus', true);
-      this.$store.commit('login/setUserId',data.id);
+      this.$store.commit('login/setUserId', data.id);
     },
     login () {
       console.log('this', this.name);
