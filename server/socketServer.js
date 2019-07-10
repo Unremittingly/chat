@@ -1,4 +1,4 @@
-let server = require('ws').Server
+let server = require('ws').Server;
 let ws = new server({
   port: 8003
 }, function (e) {
@@ -8,16 +8,16 @@ let ws = new server({
     console.log('开启失败', e)
   }
 
-})
-var connNum = []
+});
+var connNum = [];
 
 const isSame = (name) => {
-  let same = false
+  let same = false;
   for (let i = 0; i < connNum.length; i++) {
-    let w = connNum[i]
+    let w = connNum[i];
     if (w.name == name) {
-      same = true
-      break
+      same = true;
+      break;
     }
 
   }
@@ -29,8 +29,8 @@ ws.on('connection', function (socket, req) {
   // console.log('socket', socket.id)
   //收到消息发送给每一个人
   socket.on('message', function (msg) {
-    console.log('msg', msg)
-    let data = JSON.parse(msg)
+    console.log('msg', msg);
+    let data = JSON.parse(msg);
 
 
     if (!isSame(data.name)) {
@@ -40,15 +40,16 @@ ws.on('connection', function (socket, req) {
       })
     }
     // console.log('isSame',isSame(data.name),connNum[0].name);
-    console.log('连接数：' + connNum.length)
+    console.log('连接数：' + connNum.length);
 
     //广播给所有人
     sendAll(connNum)
   })
-  function sendAll(connNum,data){
+
+  function sendAll(connNum, data) {
     let len = connNum.length;
     for (var i = 0; i < connNum.length; i++) {
-      let message = ''
+      let message = '';
       if (data && data.msg) {
         message = data.msg
       }
@@ -63,14 +64,15 @@ ws.on('connection', function (socket, req) {
     }
   }
 
-  function removeSocket(id){
-    for (let i = 0;i<connNum.length;i++){
-      if(connNum[i].socket._closeCode === id){
-        connNum.splice(i,1);
+  function removeSocket(id) {
+    for (let i = 0; i < connNum.length; i++) {
+      if (connNum[i].socket._closeCode === id) {
+        connNum.splice(i, 1);
         break;
       }
     }
   }
+
   // socket.send('发送的消息')
   //断开连接
   socket.on('close', function (id) {
@@ -79,7 +81,7 @@ ws.on('connection', function (socket, req) {
     // connNum.splice(connNum.indexOf(this), 1)
     sendAll(connNum);
   })
-})
+});
 
 
 
