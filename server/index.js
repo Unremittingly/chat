@@ -36,4 +36,10 @@ try {
 
 }
 
+try {
+  user.getAllUser(app);
+}catch (e) {
+
+}
+
 app.listen(3010, () => console.log('chat app listening on port 3010!'));

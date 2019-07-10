@@ -3,7 +3,7 @@
   <div class="home">
     <div class="item">
       <span class="label">用户名：</span>
-      <input id="user" type="text" v-model="name" placeholder="输入您的名称">
+      <input aria-label="" id="user" type="text" v-model="name" placeholder="输入您的名称">
     </div>
     <div class="item">
       <span id="login" @click="login">Login</span>
@@ -14,7 +14,6 @@
 <script>
 
 import {postUrl} from '../helper/dataManage';
-
 export default {
   name: 'index',
   data: function () {
@@ -24,7 +23,6 @@ export default {
     };
   },
   methods: {
-
     setUser (name, data) {
       let num = data.userNum;
       this.$store.commit('login/setUser', name);

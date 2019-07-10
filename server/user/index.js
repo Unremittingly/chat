@@ -11,6 +11,17 @@ const getAllUser = (callback) => {
   });
 };
 
+const getUser = (app)=>{
+  app.post('/getAllUser',function (req,res,next) {
+    getAllUser(function (userNum) {
+      res.send({
+        isOk:true,
+        userNum
+      })
+    })
+  })
+};
+
 const getAllRecord = (app) => {
   app.post('/getAllRecord', function (req, res, next) {
     let sql = 'SELECT r.*,u.username FROM  chat_room as r left join user as u ON  u.id = r.sendId ';
@@ -84,3 +95,4 @@ const saveChatRecord = (app) => {
 exports.saveChatRecord = saveChatRecord;
 exports.login = login;
 exports.getAllRecord = getAllRecord;
+exports.getAllUser = getUser;

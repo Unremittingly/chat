@@ -3,6 +3,7 @@
     <div class="user">
       <span class="label">欢迎您：</span>
       <span>{{this.name}}</span>
+      <span @click="loginOut" class="loginOut">注销</span>
     </div>
     <div class="desc">
       <span class="all-num desc-item"><span class="label">总人数：</span><span>{{this.userNum}}</span></span>
@@ -46,6 +47,17 @@
       };
     },
     methods: {
+      loginOut(){
+        this.$store.commit('login/loginOut');
+        this.socket.ws.close();
+        this.$router.push(
+          {
+            path: '/home'
+          }
+        );
+        // window.location.reload()
+
+      },
       sendMessage () {
         if(!this.text){
           console.log('消息不能为空!');
@@ -76,6 +88,9 @@
         }
       }
     },
+    beforeDestroy(){
+      this.socket.ws.close();
+    },
     beforeCreate () {
       if (!this.$store.state.login.isLogin) {
         this.$router.push({
@@ -83,6 +98,9 @@
         });
       } else {
         let self = this;
+        postUrl('http://localhost:3010/getAllUser').then(function (data) {
+          self.userNum = data.userNum;
+        });
         postUrl('http://localhost:3010/getAllRecord', {}).then((data) => {
           self.initData(data.data);
         });
@@ -96,7 +114,6 @@
       // }
       // 获取user
       let user = this.$store.state.login.user;
-
       // 单例
       this.socket = websocket(user, 1, (result) => {
         let data = JSON.parse(result);
@@ -203,6 +220,13 @@
         height: 3rem;
         line-height: 3rem;
       }
+    }
+
+    .loginOut{
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 1rem;
+      color: red;
     }
   }
 </style>

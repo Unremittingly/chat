@@ -41,12 +41,15 @@ ws.on('connection', function (socket, req) {
     }
     // console.log('isSame',isSame(data.name),connNum[0].name);
     console.log('连接数：' + connNum.length)
-    let len = connNum.length;
 
     //广播给所有人
+    sendAll(connNum)
+  })
+  function sendAll(connNum,data){
+    let len = connNum.length;
     for (var i = 0; i < connNum.length; i++) {
       let message = ''
-      if (data.msg) {
+      if (data && data.msg) {
         message = data.msg
       }
       if (connNum[i].name) {
@@ -58,11 +61,23 @@ ws.on('connection', function (socket, req) {
       }
 
     }
-  })
+  }
+
+  function removeSocket(id){
+    for (let i = 0;i<connNum.length;i++){
+      if(connNum[i].socket._closeCode === id){
+        connNum.splice(i,1);
+        break;
+      }
+    }
+  }
   // socket.send('发送的消息')
   //断开连接
-  socket.on('close', function () {
-    connNum.splice(connNum.indexOf(this), 1)
+  socket.on('close', function (id) {
+
+    removeSocket(id);
+    // connNum.splice(connNum.indexOf(this), 1)
+    sendAll(connNum);
   })
 })
 
