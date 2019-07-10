@@ -7,7 +7,7 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
-console.log('123');
+// console.log('123');
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
