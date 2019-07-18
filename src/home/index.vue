@@ -84,8 +84,8 @@ export default {
   #login {
     padding: 0.5rem 2rem;
     border: 1px solid #eee;
-    color: #fff;
     border-radius: 0.5rem;
+    color: #fff;
     background: #666;
   }
 

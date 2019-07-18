@@ -18,3 +18,14 @@ export const timeFormat = (timestamp, formatStr) => {
     })[matches];
   });
 };
+
+export const splitArray = (arr, start, end) => {
+  let result = [];
+  for (let i = 0; i < arr.length; i++) {
+    let obj = arr[i];
+    if (i >= start && i <= end) {
+      result.push(obj);
+    }
+  }
+  return result;
+};

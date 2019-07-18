@@ -15,7 +15,7 @@ const isSame = (name) => {
   let same = false;
   for (let i = 0; i < connNum.length; i++) {
     let w = connNum[i];
-    if (w.name == name) {
+    if (w.name === name) {
       same = true;
       break;
     }
@@ -57,7 +57,8 @@ ws.on('connection', function (socket, req) {
         connNum[i].socket.send(JSON.stringify({
           name: connNum[i].name,
           msg: message,
-          len
+          len,
+          all:connNum//所有人员
         }))
       }
 
