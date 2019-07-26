@@ -43,7 +43,7 @@ ws.on('connection', function (socket, req) {
     console.log('连接数：' + connNum.length);
 
     //广播给所有人
-    sendAll(connNum)
+    sendAll(connNum,data)
   })
 
   function sendAll(connNum, data) {
@@ -53,6 +53,7 @@ ws.on('connection', function (socket, req) {
       if (data && data.msg) {
         message = data.msg
       }
+      // console.log('mass',message);
       if (connNum[i].name) {
         connNum[i].socket.send(JSON.stringify({
           name: connNum[i].name,

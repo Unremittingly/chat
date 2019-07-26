@@ -8,11 +8,11 @@ let connection = null;
  */
 const connectMysql = function (option) {
     let opt = {
-        host: 'localhost',
+        host: '47.240.15.130',
         port: '3306',
         user: 'root',
       //123456Zq  fcymwg&M%8r_
-        password: '123456Zq',
+        password: 'root',
         database: 'chat'
     };
     opt = Object.assign(opt, option);
