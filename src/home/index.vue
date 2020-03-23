@@ -6,6 +6,10 @@
       <input aria-label="" id="user" type="text" v-model="name" placeholder="输入您的名称">
     </div>
     <div class="item">
+      <span class="label">密码：</span>
+      <input aria-label="" id="pwd" type="text" v-model="name" placeholder="输入您的密码">
+    </div>
+    <div class="item">
       <span id="login" @click="login">Login</span>
     </div>
   </div>
@@ -13,48 +17,49 @@
 
 <script>
 
-import {postUrl} from '../helper/dataManage';
-export default {
-  name: 'index',
-  data: function () {
-    return {
-      name: '',
-      id: 1
-    };
-  },
-  methods: {
-    setUser (name, data) {
-      let num = data.userNum;
-      this.$store.commit('login/setUser', name);
-      this.$store.commit('login/setUserNum', num);
-      this.$store.commit('login/setLoginStatus', true);
-      this.$store.commit('login/setUserId', data.id);
-    },
-    login () {
-      console.log('this', this.name);
-      let name = this.name;
-      if (name) {
-        postUrl('http://localhost:3010/login', {
-          name: name,
-          id: this.id
-        }).then((data) => {
-          this.setUser(name, data);
-          this.$router.push(
-            {
-              path: '/room',
-              query: {
-                name: this.name,
-                id: this.id
-              }
-            }
-          );
-          console.log('login in');
-        });
-      }
-    }
+  import {postUrl} from '../helper/dataManage';
 
-  }
-};
+  export default {
+    name: 'index',
+    data: function () {
+      return {
+        name: '',
+        id: 1
+      };
+    },
+    methods: {
+      setUser(name, data) {
+        let num = data.userNum;
+        this.$store.commit('login/setUser', name);
+        this.$store.commit('login/setUserNum', num);
+        this.$store.commit('login/setLoginStatus', true);
+        this.$store.commit('login/setUserId', data.id);
+      },
+      login() {
+        console.log('this', this.name);
+        let name = this.name;
+        if (name) {
+          postUrl('http://localhost:3010/login', {
+            name: name,
+            id: this.id
+          }).then((data) => {
+            this.setUser(name, data);
+            this.$router.push(
+              {
+                path: '/room',
+                query: {
+                  name: this.name,
+                  id: this.id
+                }
+              }
+            );
+            console.log('login in');
+          });
+        }
+      }
+
+    }
+  };
 </script>
 
 <style scoped lang="less">
@@ -67,7 +72,13 @@ export default {
   }
 
   .item {
-    margin: 2rem;
+    margin: 0.5rem;
+
+    .label {
+      display: inline-block;
+      width: 100px;
+      text-align: right;
+    }
 
     input {
       height: 2.8rem;
@@ -79,6 +90,12 @@ export default {
       border-radius: 0.3rem;
 
     }
+
+    &:last-child {
+      margin-top: 2rem;
+    }
+
+
   }
 
   #login {
